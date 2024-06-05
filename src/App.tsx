@@ -1,25 +1,48 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import "./App.css";
+import GameScreen from "./components/GameScreen";
+import WelcomeScreen from "./components/WelcomeScreen";
+import InstructionsScreen from "./components/InstructionsScreen";
+import FinalScreen from "./components/FinalScreen";
 
 function App() {
+  const [isGameStart, setIsGameStart] = useState(false);
+  const [welcomeScreenDone, setWelcomeScreenDone] = useState(false);
+  const [isGameEnd, setIsGameEnd] = useState(false);
+  const [score, setScore] = useState(0);
+
+  const playGame = (status: boolean) => {
+    setIsGameStart(status);
+  };
+
+  const welcomeDoneHandler = (status: boolean) => {
+    setWelcomeScreenDone(status);
+  };
+
+  const gameEndHandler = (status: boolean) => {
+    setIsGameEnd(status);
+  };
+
+  const scoreHandler = (newScore:number)=>{
+    setScore(newScore)
+  }
+
+  const goToBack = ()=>{
+    setWelcomeScreenDone(false)
+    setIsGameStart(false)
+    setIsGameEnd(false)
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      {!welcomeScreenDone && <WelcomeScreen welcomeDoneHandler={welcomeDoneHandler} />}
+      {welcomeScreenDone && !isGameStart &&<InstructionsScreen playGame={playGame} />}
+      {/* {isGameStart && <GameScreen/>} */}
+      {!isGameEnd && isGameStart &&  (
+        <GameScreen score={score} scoreHandler={scoreHandler} gameEndHandler={gameEndHandler} goToBack={goToBack} />
+      )}
+      {isGameEnd && <FinalScreen score={score} goToBack={goToBack} gameEndHandler={gameEndHandler} scoreHandler={scoreHandler}   />}
+    </>
   );
 }
 
